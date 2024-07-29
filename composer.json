@@ -1,0 +1,11 @@
+{
+  "name": "solidie/solidie-lib",
+  "description": "WP PHP scripts for plugins and themes",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "SolidieLib\\": "src/"
+    }
+  },
+  "require": {}
+}
