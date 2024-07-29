@@ -1,5 +1,6 @@
 {
   "name": "solidie/solidie-lib",
+  "version": "1.0.0",
   "description": "WP PHP scripts for plugins and themes",
   "type": "library",
   "autoload": {
