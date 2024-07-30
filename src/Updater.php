@@ -10,7 +10,12 @@ class Updater {
 	private $root_menu;
 	private $user_role;
 	private $screen_label;
-	private $app_configs;
+	private $logo_url;
+	private $license_find_url;
+	private $contact_url;
+	private $app_version;
+	private $app_label;
+	private $app_url;
 
 	const PREREQUISITES = array(
 		'licenseKeySubmit' => array(
@@ -29,14 +34,19 @@ class Updater {
 	 */
 	function __construct( $configs ) {
 		
-		$this->app_name     = $configs['app_name'];
-		$this->option_key   = $this->app_name . '-license-data';
-		$this->page_slug    = $this->app_name . '-license';
-		$this->api_endpoint = $configs['api_endpoint'];
-		$this->root_menu    = $configs['root_menu'];
-		$this->user_role    = $configs['user_role'];
-		$this->screen_label = $configs['screen_label'];
-		$this->app_configs  = $configs['app_configs'];
+		$this->app_name         = $configs['app_name'];
+		$this->app_label        = $configs['app_label'];
+		$this->app_version      = $configs['app_version'];
+		$this->app_url          = $configs['app_url'];
+		$this->option_key       = $this->app_name . '-license-data';
+		$this->page_slug        = $this->app_name . '-license';
+		$this->api_endpoint     = $configs['api_endpoint'];
+		$this->root_menu        = $configs['root_menu'];
+		$this->user_role        = $configs['user_role'];
+		$this->screen_label     = $configs['screen_label'];
+		$this->logo_url         = $configs['logo_url'];
+		$this->contact_url      = $configs['contact_url'];
+		$this->license_find_url = $configs['license_find_url'];
 		
 		// Register license page hooks if parent page slug defined, it means the content is not free and requires license activation to get updates. 
 		add_action( 'admin_menu', array( $this, 'addLicensePage' ), 100 );
@@ -95,13 +105,26 @@ class Updater {
 	 * @return void
 	 */
 	public function licenseForm() {
+
 		// Refresh license state before page load
 		$this->APICall();
 
 		$license = $this->getSavedLicense();
 
+		$configs = array(
+			'app_label'        => $this->app_label,
+			'screen_label'     => $this->screen_label,
+			'logo_url'         => $this->logo_url,
+			'contact_url'      => $this->contact_url,
+			'license_find_url' => $this->license_find_url,
+		);
+
 		// Load the form now
-		echo '<div id="solidie_license_page" data-license="' . ( $license ? esc_attr( wp_json_encode( $license ) ) : '' ) . '"></div>';
+		echo '<div 
+			id="solidie_license_page" 
+			data-license="' . ( $license ? esc_attr( wp_json_encode( $license ) ) : '' ) . '"
+			data-configs="' . esc_attr( wp_json_encode( $configs ) ) . '"
+		></div>';
 	}
 
 	/**
@@ -198,7 +221,7 @@ class Updater {
 	 */
 	function getPluginInfo( $res, $action, $args ) {
 
-		if ( $action !== 'plugin_information' || ( $this->app_configs->basename !== $args->slug ) ) {
+		if ( $action !== 'plugin_information' || ( $this->app_name !== $args->slug ) ) {
 			return false;
 		}
 
@@ -206,7 +229,7 @@ class Updater {
 		$res          = new \stdClass();
 		$res->slug    = $this->app_name;
 		$res->name    = 'Solidie Pro';
-		$res->version = $this->app_configs->version;
+		$res->version = $this->app_version;
 		
 		if ( is_object( $remote ) && $remote->success ) {
 			$res->version      = $remote->data->version;
@@ -232,19 +255,19 @@ class Updater {
 		if ( 
 			is_object( $request_body ) && 
 			$request_body->success && 
-			version_compare( $this->app_configs->version, $request_body->data->version, '<' )
+			version_compare( $this->app_version, $request_body->data->version, '<' )
 		) {
 			$update_info = array(
 				'new_version'   => $request_body->data->version,
 				'package'       => $request_body->data->download_url,
-				'slug'          => $this->app_configs->basename,
+				'slug'          => $this->app_name,
 				'url'           => $request_body->data->content_permalink,
 			);
 		}
 
 		// Now update this content data in the transient
 		if ( is_object( $transient ) ) {
-			$transient->response[ $this->app_configs->basename ] = $update_info ? (object)$update_info : null;
+			$transient->response[ $this->app_name ] = $update_info ? (object)$update_info : null;
 		}
 
 		return $transient;
@@ -293,6 +316,6 @@ class Updater {
 	}
 
 	public function loadScript() {
-		wp_enqueue_script( 'solidie-license-script',  $this->app_configs->url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_configs->version, true );
+		wp_enqueue_script( 'solidie-license-script',  $this->app_url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_version, true );
 	}
 }

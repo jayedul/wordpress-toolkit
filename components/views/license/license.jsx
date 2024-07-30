@@ -8,8 +8,6 @@ import { TextField } from 'solidie-materials/text-field/text-field.jsx';
 import { request } from 'solidie-materials/request.jsx';
 import { LoadingIcon } from 'solidie-materials/loading-icon/loading-icon.jsx';
 
-import logo_img from '../../../../Solidie/components/images/logo.svg';
-
 const {readonly_mode} = window[data_pointer];
 
 function ActiveScreen(props) {
@@ -73,7 +71,7 @@ function ActiveScreen(props) {
 	</div>
 }
 
-function LicenseForm({license}) {
+function LicenseForm({license={}, configs={}}) {
 	
 	const ref_wrapper = useRef();
 	const [state, setState] = useState({
@@ -106,7 +104,7 @@ function LicenseForm({license}) {
 
 	return <div style={{paddingTop: '35px', height: '100%'}} className={'padding-horizontal-15'.classNames()}>
 		<div className={'margin-auto text-align-center padding-vertical-40'.classNames()}>
-			<img src={logo_img} style={{width: '80px'}}/>
+			<img src={configs.logo_url} style={{width: '80px', height: 'auto'}}/>
 		</div>
 		{
 			state.license?.activated ? <ActiveScreen license={state.license} onReconnect={()=>setVal('license', null)}/> : 
@@ -116,11 +114,11 @@ function LicenseForm({license}) {
 			>
 				<div className={'flex-1'.classNames()}>
 					<strong className={'d-block font-size-28 font-weight-600 color-text line-height-30 margin-bottom-10'.classNames()}>
-						{__('Solidie Pro License')}
+						{configs.screen_label}
 					</strong>
 
 					<span className={'d-block font-size-15 font-weight-400 line-height-25 color-text-70 margin-bottom-30'.classNames()}>
-						If you have a Solidie pro license, The license key should be available on <a href="https://solidie.com/my-dashboard/my-purchases/" target="_blank" className={'color-material-70 interactive font-weight-600 hover-underline'.classNames()}>here</a>.
+						If you have a {configs.app_label} license, The license key should be available on <a href={configs.license_find_url} target="_blank" className={'color-material-70 interactive font-weight-600 hover-underline'.classNames()}>here</a>.
 					</span>
 					
 					<div className={'margin-bottom-30'.classNames()} ref={ref_wrapper}>
@@ -157,7 +155,7 @@ function LicenseForm({license}) {
 					</div>
 					
 					<span className={'d-block font-size-15 font-weight-400 line-height-25 color-text-70'.classNames()}>
-						{__('Having trouble?')} <a href="https://solidie.com/#contact" target="_blank" className={'color-material-70 interactive font-weight-600 hover-underline'.classNames()}>{__('Contact us')}</a>.
+						{__('Having trouble?')} <a href={configs.contact_url} target="_blank" className={'color-material-70 interactive font-weight-600 hover-underline'.classNames()}>{__('Contact us')}</a>.
 					</span>
 				</div>
 			</div>
