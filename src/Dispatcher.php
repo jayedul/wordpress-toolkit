@@ -54,10 +54,9 @@ class Dispatcher {
 	public function registerControllers() {
 
 		$registered_methods = array();
-		$controllers        = apply_filters( 'solidie_controllers_' . $this->app_id, $this->controllers );
 
 		// Loop through controllers classes
-		foreach ( $controllers as $class ) {
+		foreach ( $this->controllers as $class ) {
 
 			// Loop through controller methods in the class
 			foreach ( $class::PREREQUISITES as $method => $prerequisites ) {
