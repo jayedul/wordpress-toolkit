@@ -293,6 +293,6 @@ class Updater {
 	}
 
 	public function loadScript() {
-		wp_enqueue_script( 'solidie-license-script',  $this->app_configs->dist_url . 'license.js', array( 'jquery', 'wp-i18n' ), $this->app_configs->version, true );
+		wp_enqueue_script( 'solidie-license-script',  $this->app_configs->url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_configs->version, true );
 	}
 }
