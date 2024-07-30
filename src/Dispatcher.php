@@ -27,26 +27,20 @@ class Dispatcher {
 	private $controllers;
 
 	/**
-	 * Custom Administrative role
-	 *
-	 * @var string
-	 */
-	private $administrative_role;
-
-	/**
 	 * Dispatcher registration in constructor
 	 *
+	 * @param string $app_id The unique app ID
 	 * @param array $controllers Initial controllers array
 	 */
-	public function __construct( array $controllers, string $administrative_role = null ) {
+	public function __construct( string $app_id, array $controllers ) {
 
 		// Register ajax handlers only if it is ajax call
 		if ( ! wp_doing_ajax() ) {
 			return;
 		}
 
-		$this->controllers         = $controllers;
-		$this->administrative_role = $administrative_role;
+		$this->app_id      = $app_id;
+		$this->controllers = $controllers;
 
 		add_action( 'plugins_loaded', array( $this, 'registerControllers' ), 11 );
 	}
@@ -120,9 +114,8 @@ class Dispatcher {
 		}
 
 		// Validate access privilege
-		$required_roles      = $prerequisites['role'] ?? array();
-		$required_roles      = is_array( $required_roles ) ? $required_roles : array( $required_roles );
-		$required_roles      = array_filter( in_array( 'administrator', $required_roles ) ? array_unique( array_merge( $required_roles, array( $this->administrative_role ?? null ) ) ) : array() );
+		$required_roles = _Array::getArray( ( $prerequisites['role'] ?? array() ), true );
+		$required_roles = apply_filters( 'solidie_controller_roles_' . $this->app_id, $required_roles );
 		if ( ! User::validateRole( get_current_user_id(), $required_roles ) ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'You are not authorized!', 'solidie' ) ) );
 		}
