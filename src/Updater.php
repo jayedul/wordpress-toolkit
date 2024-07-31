@@ -71,7 +71,7 @@ class Updater {
 	 */
 	public function showLicenseNotice() {
 
-		if ( is_admin() && ! $this->isLicenseActive()) {
+		if ( Utilities::isAdminScreen( $this->root_menu ) && ! $this->isLicenseActive()) {
 
 			$message = sprintf(
 				__( 'There is an error with your Solidie Pro License. Automatic update has been turned off. %sResolve Now%s' ),
@@ -316,6 +316,8 @@ class Updater {
 	}
 
 	public function loadScript() {
-		wp_enqueue_script( 'solidie-license-script',  $this->app_url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_version, true );
+		if ( Utilities::isAdminScreen( $this->root_menu ) ) {
+			wp_enqueue_script( 'solidie-license-script',  $this->app_url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_version, true );
+		}
 	}
 }
