@@ -42,7 +42,7 @@ class Dispatcher {
 		$this->app_id      = $app_id;
 		$this->controllers = $controllers;
 
-		add_action( 'plugins_loaded', array( $this, 'registerControllers' ), 11 );
+		$this->registerControllers();
 	}
 
 	/**
