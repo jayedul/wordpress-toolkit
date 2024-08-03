@@ -230,7 +230,7 @@ class _Array {
 	 * @return array|object
 	 */
 	public static function getManifestArray( string $path, $ret_type = OBJECT ) {
-		
+
 		$result = [];
 
 		// Use regular expressions to match the first PHP comment block
@@ -275,7 +275,7 @@ class _Array {
 		$nested_array = array();
 
 		foreach ( $elements as $element ) {
-			if ( is_array( $element ) && $parent_id === ( $element[ $col_name ] ?? null ) ) {
+			if ( is_array( $element ) && ( $element[ $col_name ] ?? null ) === $parent_id ) {
 				$children = self::buildNestedArray( $elements, $element[ $parent_col_name ], $col_name, $parent_col_name );
 
 				if ( ! empty( $children ) ) {
@@ -294,6 +294,9 @@ class _Array {
 	 *
 	 * @param array  $array The table array to group rows
 	 * @param string $col_name The column name to group by
+	 * @param string $singular_field Singular field
+	 * @param string $is_unique Whether unique
+	 *
 	 * @return array
 	 */
 	public static function groupRows( $array, $col_name, $singular_field = null, $is_unique = false, ) {
@@ -348,7 +351,7 @@ class _Array {
 	 * @return array The Linear array containing column values from nested array
 	 */
 	public static function arrayColumnRecursive( $array, $column, $children_column ) {
-		
+
 		$values = array();
 
 		foreach ( $array as $element ) {
@@ -367,20 +370,21 @@ class _Array {
 	/**
 	 * Get descendent count
 	 *
-	 * @param array $array
-	 * @param int $count_col
-	 * @param string $add_count_to
+	 * @param array  $array Source array
+	 * @param string $count_col The count column
+	 * @param string $add_count_to The column to add count to
+	 *
 	 * @return array
 	 */
 	public static function getDescendentCount( array $array, string $count_col, string $add_count_to = null ) {
 		foreach ( $array as $index => $element ) {
-			
+
 			$count = $element[ $count_col ];
 
 			if ( is_array( $element ) && is_array( $element['children'] ?? null ) ) {
-				$children = self::getDescendentCount( $element['children'], $count_col, $add_count_to );
-				$count    = $count + array_sum( array_column( $children, $count_col ) );
-				$array[ $index ]['children'] = $children;
+				$children                      = self::getDescendentCount( $element['children'], $count_col, $add_count_to );
+				$count                         = $count + array_sum( array_column( $children, $count_col ) );
+				$array[ $index ]['children']   = $children;
 				$array[ $index ][ $count_col ] = $count;
 
 			}

@@ -8,5 +8,18 @@
       "SolidieLib\\": "src/"
     }
   },
-  "require": {}
+    "scripts": {
+        "lint": "phpcs --extensions=php -s .",
+        "lint:fix": "phpcbf --extensions=php ."
+    },
+	"require": {
+	},
+    "require-dev": {
+        "10up/phpcs-composer": "dev-master"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }

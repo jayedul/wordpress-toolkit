@@ -7,6 +7,9 @@
 
 namespace SolidieLib;
 
+/**
+ * User helper functions
+ */
 class User {
 
 	/**

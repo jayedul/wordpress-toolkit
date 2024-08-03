@@ -1,16 +1,29 @@
 <?php
 /**
- * Color pallete
+ * WP plugin readme file parser
  *
  * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;
 
+/**
+ * Readme file parse class
+ */
 class Readme {
 
+	/**
+	 * Readme path
+	 *
+	 * @var string
+	 */
 	private $path;
 
+	/**
+	 * Contructor
+	 *
+	 * @param string $path The readme path
+	 */
 	public function __construct( string $path ) {
 		$this->path = $path;
 	}

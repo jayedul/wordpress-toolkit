@@ -15,7 +15,7 @@ class Utilities {
 	/**
 	 * Get equivalent days from period
 	 *
-	 * @param string $period
+	 * @param string $period The period string
 	 * @return int|null
 	 */
 	public static function periodToDays( string $period ) {
@@ -24,12 +24,12 @@ class Utilities {
 
 		switch ( $period ) {
 
-			case 'month' : 
-				$days = 30; 
+			case 'month':
+				$days = 30;
 				break;
 
-			case 'year' : 
-				$days = 365; 
+			case 'year':
+				$days = 365;
 				break;
 		}
 
@@ -62,8 +62,8 @@ class Utilities {
 	/**
 	 * Check if Solidie Pro version installed or not
 	 *
-	 * @param string  $path Plugin path
-	 * @param boolean $check_active
+	 * @param string  $path Plugin path The plugin path
+	 * @param boolean $check_active Whether to check if active
 	 *
 	 * @return boolean
 	 */
@@ -79,6 +79,7 @@ class Utilities {
 	/**
 	 * Get unique ID to point solid app in any setup
 	 *
+	 * @param string $url The URL to get app ID by
 	 * @return string
 	 */
 	public static function getAppId( $url ) {
@@ -94,7 +95,7 @@ class Utilities {
 	/**
 	 * Generate admin page urls
 	 *
-	 * @param string $page
+	 * @param string $page The page name
 	 * @return string
 	 */
 	public static function getBackendPermalink( string $page ) {

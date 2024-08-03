@@ -85,11 +85,12 @@ class _String {
 	 * @return string
 	 */
 	public static function applyKses( string $string, $echo = false ) {
-		
+
 		// For now return direct string. Because users might write code snippet for content, articles, comments etc.
 		$string = preg_replace( '#<script(.*?)>(.*?)</script>#is', '', $string );
 
-		/* static $allowed = null;
+		/*
+		 static $allowed = null;
 
 		// Prepare allowed array only once by defining as static
 		if ( null === $allowed ) {
@@ -102,8 +103,8 @@ class _String {
 				// And assign supported attributes per tag
 				$allowed[ $tag ] = self::$allowed_attributes;
 			}
-		} 
-		
+		}
+
 		$string = wp_kses( $string, $allowed ); */
 
 		if ( $echo ) {
@@ -178,8 +179,9 @@ class _String {
 	/**
 	 * Consolidate string
 	 *
-	 * @param string  $input_string
-	 * @param boolean $replace_newlines
+	 * @param string  $input_string Source string
+	 * @param boolean $replace_newlines Replace new line flag bool
+	 *
 	 * @return string
 	 */
 	public static function consolidate( string $input_string, $replace_newlines = false ) {
@@ -190,18 +192,19 @@ class _String {
 	/**
 	 * Clean base path
 	 *
-	 * @param string $str
+	 * @param string $str The string to purge
+	 *
 	 * @return string
 	 */
 	public static function purgeBasePath( $str ) {
 		// Remove non-alphanumeric characters (except spaces and hyphens)
-		$cleaned_str = preg_replace('/[^a-zA-Z0-9\s-]/', '', $str);
+		$cleaned_str = preg_replace( '/[^a-zA-Z0-9\s-]/', '', $str );
 
 		// Replace spaces with hyphens
-		$cleaned_str = preg_replace('/\s+/', '-', $cleaned_str);
+		$cleaned_str = preg_replace( '/\s+/', '-', $cleaned_str );
 
 		// Consolidate multiple hyphens into a single hyphen
-		$cleaned_str = preg_replace('/-+/', '-', $cleaned_str);
+		$cleaned_str = preg_replace( '/-+/', '-', $cleaned_str );
 
 		// Return the cleaned string
 		return $cleaned_str;

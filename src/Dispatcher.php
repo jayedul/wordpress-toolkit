@@ -30,7 +30,7 @@ class Dispatcher {
 	 * Dispatcher registration in constructor
 	 *
 	 * @param string $app_id The unique app ID
-	 * @param array $controllers Initial controllers array
+	 * @param array  $controllers Initial controllers array
 	 */
 	public function __construct( string $app_id, array $controllers ) {
 
@@ -147,15 +147,15 @@ class Dispatcher {
 			if ( $arg_type != $param_type ) {
 
 				if ( 'string' === $param_type && is_numeric( $value ) ) {
-					$args[ $name ] = ( string ) $value;
+					$args[ $name ] = (string) $value;
 
-				} else if ( 'double' === $param_type && is_numeric( $value ) ) {
-					$args[ $name ] = ( float ) $value;
+				} elseif ( 'double' === $param_type && is_numeric( $value ) ) {
+					$args[ $name ] = (float) $value;
 
-				} else if ( 'integer' === $param_type && is_numeric( $value ) ) {
-					$args[ $name ] = ( int ) $value;
+				} elseif ( 'integer' === $param_type && is_numeric( $value ) ) {
+					$args[ $name ] = (int) $value;
 
-				} else if ( 'array' === $param_type && 'integer' === $arg_type ) {
+				} elseif ( 'array' === $param_type && 'integer' === $arg_type ) {
 					// Sometimes 0 can be passed instead of array
 					// Then use empty array rather
 					// So far the seneario has found when thumbnail is not set in content editor
@@ -163,12 +163,12 @@ class Dispatcher {
 
 				} else {
 					wp_send_json_error(
-						array( 
+						array(
 							'message'  => 'Invalid request data!',
 							'param'    => $name,
 							'accepts'  => $param_type,
 							'received' => $arg_type,
-						) 
+						)
 					);
 				}
 			}

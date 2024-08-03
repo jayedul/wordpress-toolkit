@@ -7,39 +7,119 @@
 
 namespace SolidieLib;
 
+/**
+ * Updater class
+ */
 class Updater {
 
+	/**
+	 * The app unique name
+	 *
+	 * @var string
+	 */
 	private $app_name;
+
+	/**
+	 * Option key to save license data
+	 *
+	 * @var string
+	 */
 	private $option_key;
+
+	/**
+	 * License page slug
+	 *
+	 * @var string
+	 */
 	private $page_slug;
+
+	/**
+	 * The api endpoint URL
+	 *
+	 * @var string
+	 */
 	private $api_endpoint;
+
+	/**
+	 * Root menu slug to register license page under
+	 *
+	 * @var string
+	 */
 	private $root_menu;
+
+	/**
+	 * The user role to register license page for
+	 *
+	 * @var string
+	 */
 	private $user_role;
+
+	/**
+	 * Page/menu label
+	 *
+	 * @var string
+	 */
 	private $screen_label;
+
+	/**
+	 * The logo URL to show before license form
+	 *
+	 * @var string
+	 */
 	private $logo_url;
+
+	/**
+	 * The URL to obtain license from
+	 *
+	 * @var string
+	 */
 	private $license_find_url;
+
+	/**
+	 * The contact URL
+	 *
+	 * @var string
+	 */
 	private $contact_url;
+
+	/**
+	 * App current version
+	 *
+	 * @var string
+	 */
 	private $app_version;
+
+	/**
+	 * The app label
+	 *
+	 * @var string
+	 */
 	private $app_label;
+
+	/**
+	 * The theme/plugin root url
+	 *
+	 * @var string
+	 */
 	private $app_url;
 
 	const PREREQUISITES = array(
 		'licenseKeySubmit' => array(
 			'role' => array(
-				'administrator'
-			)
-		)
+				'administrator',
+			),
+		),
 	);
 
 	/**
 	 * Updater constructor
 	 *
-	 * @param array $configs
+	 * @param array $configs App configs
 	 *
 	 * @return void
 	 */
-	function __construct( $configs ) {
-		
+	public function __construct( $configs ) {
+
 		$this->app_name         = $configs['app_name'];
 		$this->app_label        = $configs['app_label'];
 		$this->app_version      = $configs['app_version'];
@@ -53,8 +133,8 @@ class Updater {
 		$this->logo_url         = $configs['logo_url'];
 		$this->contact_url      = $configs['contact_url'];
 		$this->license_find_url = $configs['license_find_url'];
-		
-		// Register license page hooks if parent page slug defined, it means the content is not free and requires license activation to get updates. 
+
+		// Register license page hooks if parent page slug defined, it means the content is not free and requires license activation to get updates.
 		add_action( 'admin_menu', array( $this, 'addLicensePage' ), 100 );
 
 		// Register plugin api request hooks
@@ -77,15 +157,21 @@ class Updater {
 	 */
 	public function showLicenseNotice() {
 
-		if ( Utilities::isAdminScreen( $this->root_menu ) && ! $this->isLicenseActive()) {
-
-			$message = sprintf(
-				__( 'There is an error with your Solidie Pro License. Automatic update has been turned off. %sResolve Now%s' ),
-				"<a href='" . admin_url( 'admin.php?page=' . $this->page_slug ) . "'>",
-				'</a>'
-			);
-
-			printf( '<div class="notice notice-error"><p>%s</p></div>', $message );
+		if ( Utilities::isAdminScreen( $this->root_menu ) && ! $this->isLicenseActive() ) {
+			?>
+			<div class="notice notice-error">
+				<p>
+					<?php
+						printf(
+							// translators: License error message
+							esc_html__( 'There is an error with your Solidie Pro License. Automatic update has been turned off. %1$sResolve Now%2$s' ),
+							"<a href='" . esc_url( admin_url( 'admin.php?page=' . $this->page_slug ) ) . "'>",
+							'</a>'
+						);
+					?>
+				</p>
+			</div>
+			<?php
 		}
 	}
 
@@ -97,11 +183,11 @@ class Updater {
 	public function addLicensePage() {
 		add_submenu_page(
 			$this->root_menu,
-			$this->screen_label, 
-			$this->screen_label, 
-			$this->user_role, 
-			$this->page_slug, 
-			array( $this, 'licenseForm' ) 
+			$this->screen_label,
+			$this->screen_label,
+			$this->user_role,
+			$this->page_slug,
+			array( $this, 'licenseForm' )
 		);
 	}
 
@@ -128,7 +214,7 @@ class Updater {
 		// Load the form now
 		echo '<div 
 			id="solidie_license_page" 
-			data-license="' . ( $license ? esc_attr( wp_json_encode( $license ) ) : '' ) . '"
+			data-license="' . esc_attr( wp_json_encode( $license ? $license : '{}' ) ) . '"
 			data-configs="' . esc_attr( wp_json_encode( $configs ) ) . '"
 		></div>';
 	}
@@ -136,7 +222,8 @@ class Updater {
 	/**
 	 * Return prepared request
 	 *
-	 * @param string|null $action
+	 * @param string|null $action The action
+	 * @param string|null $license_key The license key
 	 * @return object|null
 	 */
 	private function APICall( $action = null, $license_key = null ) {
@@ -154,7 +241,7 @@ class Updater {
 			}
 		}
 
-		$payload =  array(
+		$payload = array(
 			'license_key' => $license_key,
 			'endpoint'    => get_home_url(),
 			'app_name'    => $this->app_name,
@@ -168,16 +255,16 @@ class Updater {
 		$response          = is_object( $response ) ? $response : new \stdClass();
 		$response->success = $response->success ?? false;
 		$response->data    = $response->data ?? new \stdClass();
-		
+
 		// Deactivate key if any request send falsy
-		if ( $response && isset( $response->data->activated ) && $response->data->activated === false ) {
+		if ( $response && isset( $response->data->activated ) && false === $response->data->activated ) {
 			update_option(
-				$this->option_key, 
-				array( 
-					'activated'   => false, 
+				$this->option_key,
+				array(
+					'activated'   => false,
 					'license_key' => $license_key,
-					'message'     => $response->data->message ?? esc_html__( 'The license key is expired or revoked!' ) 
-				) 
+					'message'     => $response->data->message ?? esc_html__( 'The license key is expired or revoked!' ),
+				)
 			);
 		}
 
@@ -188,14 +275,14 @@ class Updater {
 	 * Activate license key on submit. Only this one will be called from user ajax request.
 	 *
 	 * @param string $license_key The license key setup
-	 * 
+	 *
 	 * @return void
 	 */
 	public function licenseKeySubmit( string $license_key ) {
 
-		$response    = $this->APICall( 'activate-license', $license_key );
+		$response = $this->APICall( 'activate-license', $license_key );
 
-		if ( is_object( $response ) &&  $response->success ) {
+		if ( is_object( $response ) && $response->success ) {
 			$license_info = array(
 				'license_key' => $license_key,
 				'activated'   => $response->data->activated ? true : false,
@@ -217,17 +304,17 @@ class Updater {
 	}
 
 	/**
-	 * @param $res
-	 * @param $action
-	 * @param $args
+	 * Alter plugin info
+	 *
+	 * @param object $res Result
+	 * @param string $action The action
+	 * @param object $args Data args
 	 *
 	 * @return bool|\stdClass
-	 *
-	 * Get the plugin info from server
 	 */
-	function getPluginInfo( $res, $action, $args ) {
+	public function getPluginInfo( $res, $action, $args ) {
 
-		if ( $action !== 'plugin_information' || ( $this->app_name !== $args->slug ) ) {
+		if ( 'plugin_information' !== $action || ( $this->app_name !== $args->slug ) ) {
 			return false;
 		}
 
@@ -236,44 +323,45 @@ class Updater {
 		$res->slug    = $this->app_name;
 		$res->name    = 'Solidie Pro';
 		$res->version = $this->app_version;
-		
+
 		if ( is_object( $remote ) && $remote->success ) {
 			$res->version      = $remote->data->version;
-			$res->last_updated = date_format( date_create( '@' . $remote->data->release_timestamp ), "Y-m-d H:i:s" );
+			$res->last_updated = date_format( date_create( '@' . $remote->data->release_timestamp ), 'Y-m-d H:i:s' );
 			$res->sections     = array(
-				'changelog' => nl2br( ( string ) $remote->data->changelog ?? '' ),
+				'changelog' => nl2br( (string) $remote->data->changelog ?? '' ),
 			);
 		}
-		
+
 		return $res;
 	}
 
 	/**
-	 * @param $transient
+	 * Check update
+	 *
+	 * @param object $transient Transient object
 	 *
 	 * @return mixed
 	 */
 	public function checkUpdate( $transient ) {
-		
+
 		$update_info  = null;
 		$request_body = $this->APICall();
 
-		if ( 
-			is_object( $request_body ) && 
-			$request_body->success && 
+		if ( is_object( $request_body ) &&
+			$request_body->success &&
 			version_compare( $this->app_version, $request_body->data->version, '<' )
 		) {
 			$update_info = array(
-				'new_version'   => $request_body->data->version,
-				'package'       => $request_body->data->download_url,
-				'slug'          => $this->app_name,
-				'url'           => $request_body->data->content_permalink,
+				'new_version' => $request_body->data->version,
+				'package'     => $request_body->data->download_url,
+				'slug'        => $this->app_name,
+				'url'         => $request_body->data->content_permalink,
 			);
 		}
 
 		// Now update this content data in the transient
 		if ( is_object( $transient ) ) {
-			$transient->response[ $this->app_name ] = $update_info ? (object)$update_info : null;
+			$transient->response[ $this->app_name ] = $update_info ? (object) $update_info : null;
 		}
 
 		return $transient;
@@ -282,7 +370,7 @@ class Updater {
 	/**
 	 * Get saved license
 	 *
-	 * @return void
+	 * @return array|null
 	 */
 	private function getSavedLicense() {
 		// Get from option. Not submitted yet if it is empty.
@@ -301,7 +389,7 @@ class Updater {
 			'licensee',
 			'expires_on',
 			'plan_name',
-			'message'
+			'message',
 		);
 
 		foreach ( $keys as $key ) {
@@ -313,17 +401,22 @@ class Updater {
 
 	/**
 	 * Check if license active
-	 * 
+	 *
 	 * @return bool
 	 */
 	private function isLicenseActive() {
 		$license = $this->getSavedLicense();
-		return is_array( $license ) && ( $license['activated'] ?? false ) == true;
+		return is_array( $license ) && true === ( $license['activated'] ?? false );
 	}
 
+	/**
+	 * Load scripts in license page
+	 *
+	 * @return void
+	 */
 	public function loadScript() {
 		if ( Utilities::isAdminScreen( $this->root_menu ) ) {
-			wp_enqueue_script( 'solidie-license-script',  $this->app_url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_version, true );
+			wp_enqueue_script( 'solidie-license-script', $this->app_url . 'vendor/solidie/solidie-lib/dist/license.js', array( 'jquery', 'wp-i18n' ), $this->app_version, true );
 		}
 	}
 }
