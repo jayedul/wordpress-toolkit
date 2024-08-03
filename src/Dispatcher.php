@@ -48,7 +48,6 @@ class Dispatcher {
 	/**
 	 * Register ajax request handlers
 	 *
-	 * @throws \Error If there is any duplicate ajax handler across controllers.
 	 * @return void
 	 */
 	public function registerControllers() {
@@ -61,8 +60,7 @@ class Dispatcher {
 			// Loop through controller methods in the class
 			foreach ( $class::PREREQUISITES as $method => $prerequisites ) {
 				if ( in_array( $method, $registered_methods, true ) ) {
-					// translators: Show the duplicate registered endpoint
-					throw new \Error( sprintf( esc_html__( 'Duplicate endpoint %s not possible' ), esc_html( $method ) ) );
+					continue;
 				}
 
 				// Determine ajax handler types
@@ -109,19 +107,19 @@ class Dispatcher {
 		// Because GET requests usually comes from bookmarked URL or direct links where nonce doesn't really make any sense.
 		// Rather we've enhanced security by verifying accepted argument data types, sanitizing and escaping in all cases.
 		if ( $is_post && ! $matched ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Nonce verification failed!' ) ) );
+			wp_send_json_error( array( 'message' => 'Nonce verification failed!' ) );
 		}
 
 		// Validate access privilege
 		$required_roles = _Array::getArray( ( $prerequisites['role'] ?? array() ), true );
 		$required_roles = apply_filters( 'solidie_controller_roles_' . $this->app_id, $required_roles );
 		if ( ! User::validateRole( get_current_user_id(), $required_roles ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'You are not authorized!' ) ) );
+			wp_send_json_error( array( 'message' => 'You are not authorized!' ) );
 		}
 
 		// Now pass to the action handler function
 		if ( ( ! is_object( $class ) && ! class_exists( $class ) ) || ! method_exists( $class, $method ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Invalid Endpoint!' ) ) );
+			wp_send_json_error( array( 'message' => 'Invalid Endpoint!' ) );
 		}
 
 		// Prepare request data
@@ -166,7 +164,7 @@ class Dispatcher {
 				} else {
 					wp_send_json_error(
 						array( 
-							'message'  => __( 'Invalid request data!' ),
+							'message'  => 'Invalid request data!',
 							'param'    => $name,
 							'accepts'  => $param_type,
 							'received' => $arg_type,
