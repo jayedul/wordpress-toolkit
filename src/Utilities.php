@@ -2,7 +2,7 @@
 /**
  * The utilities functionalities
  *
- * @package solidie
+ * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;

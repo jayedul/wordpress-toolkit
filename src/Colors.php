@@ -2,7 +2,7 @@
 /**
  * Color pallete
  *
- * @package solidie
+ * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;

@@ -2,7 +2,7 @@
 /**
  * Date time methods
  *
- * @package solidie
+ * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;

@@ -2,7 +2,7 @@
 /**
  * The dispatcher where all the ajax request pass through after validation
  *
- * @package solidie
+ * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;

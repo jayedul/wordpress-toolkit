@@ -1,4 +1,10 @@
 <?php
+/**
+ * Theme/Plugin updater
+ *
+ * @package solidie/solidie-lib
+ */
+
 namespace SolidieLib;
 
 class Updater {

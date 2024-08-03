@@ -2,7 +2,7 @@
 /**
  * The variable provider functionalities
  *
- * @package solidie
+ * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;

@@ -2,7 +2,7 @@
 /**
  * String related functions
  *
- * @package solidie
+ * @package solidie/solidie-lib
  */
 
 namespace SolidieLib;

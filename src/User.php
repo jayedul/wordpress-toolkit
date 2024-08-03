@@ -1,4 +1,10 @@
 <?php
+/**
+ * User class
+ *
+ * @package solidie/solidie-lib
+ */
+
 namespace SolidieLib;
 
 class User {
