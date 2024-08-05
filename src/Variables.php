@@ -79,7 +79,6 @@ class Variables {
 				'home_url' => get_home_url(),
 				'ajaxurl'  => admin_url( 'admin-ajax.php' ),
 				'logout'   => htmlspecialchars_decode( wp_logout_url( get_home_url() ) ),
-				'api_host' => $this->configs->api_host ?? null,
 			),
 		);
 	}
