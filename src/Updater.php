@@ -13,6 +13,13 @@ namespace SolidieLib;
 class Updater {
 
 	/**
+	 * The app pointer such as plugin/plugin.php
+	 *
+	 * @var string
+	 */
+	private $app_pointer;
+
+	/**
 	 * The app unique name
 	 *
 	 * @var string
@@ -120,6 +127,7 @@ class Updater {
 	 */
 	public function __construct( $configs ) {
 
+		$this->app_pointer      = $configs['app_pointer'];
 		$this->app_name         = $configs['app_name'];
 		$this->app_label        = $configs['app_label'];
 		$this->app_version      = $configs['app_version'];
@@ -164,7 +172,8 @@ class Updater {
 					<?php
 						printf(
 							// translators: License error message
-							esc_html__( 'There is an error with your Solidie Pro License. Automatic update has been turned off. %1$sResolve Now%2$s' ),
+							esc_html__( 'There is an error with %s License. Automatic update has been turned off. %sResolve Now%s' ),
+							$this->app_label,
 							"<a href='" . esc_url( admin_url( 'admin.php?page=' . $this->page_slug ) ) . "'>",
 							'</a>'
 						);
@@ -321,7 +330,7 @@ class Updater {
 		$remote       = $this->APICall();
 		$res          = new \stdClass();
 		$res->slug    = $this->app_name;
-		$res->name    = 'Solidie Pro';
+		$res->name    = $this->app_label;
 		$res->version = $this->app_version;
 
 		if ( is_object( $remote ) && $remote->success ) {
@@ -361,7 +370,7 @@ class Updater {
 
 		// Now update this content data in the transient
 		if ( is_object( $transient ) ) {
-			$transient->response[ $this->app_name ] = $update_info ? (object) $update_info : null;
+			$transient->response[ $this->app_pointer ] = $update_info ? (object) $update_info : null;
 		}
 
 		return $transient;
