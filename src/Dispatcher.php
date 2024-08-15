@@ -146,16 +146,19 @@ class Dispatcher {
 			// Check if request data type and accepted type matched
 			if ( $arg_type != $param_type ) {
 
-				if ( 'string' === $param_type && is_numeric( $value ) ) {
+				$is_null    = null === $value || '' === $value;
+				$is_numeric = $is_null || is_numeric( $value );
+
+				if ( 'string' === $param_type && $is_numeric ) {
 					$args[ $name ] = (string) $value;
 
-				} elseif ( 'double' === $param_type && is_numeric( $value ) ) {
+				} elseif ( 'double' === $param_type && $is_numeric ) {
 					$args[ $name ] = (float) $value;
 
-				} elseif ( 'integer' === $param_type && is_numeric( $value ) ) {
+				} elseif ( 'integer' === $param_type && $is_numeric ) {
 					$args[ $name ] = (int) $value;
 
-				} elseif ( 'array' === $param_type && 'integer' === $arg_type ) {
+				} elseif ( 'array' === $param_type && ( $is_null || 'integer' === $arg_type ) ) {
 					// Sometimes 0 can be passed instead of array
 					// Then use empty array rather
 					// So far the seneario has found when thumbnail is not set in content editor
