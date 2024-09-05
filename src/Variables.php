@@ -46,7 +46,7 @@ class Variables {
 		$page_path = is_singular() ? trim( str_replace( $root_site, '', get_permalink( get_the_ID() ) ), '/' ) : null;
 
 		return array(
-			'is_admin'     => is_admin(),
+			'is_admin'     => is_admin() ? true : false,
 			'action_hooks' => array(),
 			'filter_hooks' => array(),
 			'mountpoints'  => (object) array(),
