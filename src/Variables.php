@@ -79,6 +79,7 @@ class Variables {
 				'home_url' => get_home_url(),
 				'ajaxurl'  => admin_url( 'admin-ajax.php' ),
 				'logout'   => htmlspecialchars_decode( wp_logout_url( get_home_url() ) ),
+				'logo_url' => wp_get_attachment_image_url( get_theme_mod('custom_logo'), 'full' ),
 			),
 		);
 	}
