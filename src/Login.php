@@ -12,12 +12,12 @@ namespace SolidieLib;
  */
 class Login {
 
-	private $path = 'solidie-login';
-	private $configs;
+	private string $path = 'solidie-login';
+	private array $configs;
 
 	public function __construct( $configs ) {
 		$this->configs = $configs;
-		add_action( 'init', 'alterLoginURL');
+		add_action( 'init', array( $this, 'alterLoginURL' ) );
 	}
 
 	public function alterLoginURL() {
@@ -27,12 +27,15 @@ class Login {
 		$permalink = trailingslashit( get_home_url() ) . $this->path . '/';
     
 		if ( $pagenow == 'wp-login.php' && $_SERVER['REQUEST_METHOD'] == 'GET' ) {
-			wp_redirect( $permalink );
+			wp_redirect( add_query_arg( $permalink, ( is_array( $_GET ) ? $_GET : array() ) ) );
 			exit;
 		}
 
 		$current_url = ( is_ssl() ? 'https' : 'http' ) . '://' . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
-		if ( $current_url === $permalink ) {
+		$parsed      = parse_url( $current_url );
+		$current_per = trailingslashit( $parsed['scheme'] . '://' . $parsed['host'] . $parsed['path'] );
+		
+		if ( $current_per === $permalink ) {
 			?>
 			<!doctype html>
 			<html data-theme="light">
@@ -45,8 +48,9 @@ class Login {
 					<div 
 						id="solidie_login_screen" 
 						class="height-p-100 width-p-100"
+						data-redirect_to="<?php echo esc_url( ! empty( $_GET['redirect_to'] ) ? $_GET['redirect_to'] : get_home_url() ) ?>"
 					></div>
-					<script src="<?php echo $this->configs->app_url . 'vendor/solidie/solidie-lib/dist/login.js?version=' . $this->configs->version; ?>"></script>
+					<script src="<?php echo $this->configs['app_url'] . 'vendor/solidie/solidie-lib/dist/login.js?version=' . $this->configs['version']; ?>"></script>
 				</body>
 			</html>
 			<?php

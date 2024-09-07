@@ -68,7 +68,7 @@ const fields = {
 	}
 }
 
-export function LoginReg() {
+export function LoginReg({redirect_to}) {
 
 	const {ajaxToast} = useContext(ContextToast);
 	const navigate = useNavigate();
@@ -118,7 +118,7 @@ export function LoginReg() {
 				return;
 			}
 
-			window.location.replace();
+			window.location.replace(redirect_to);
 		});
 	}
 
@@ -228,7 +228,7 @@ export const routes = {
 	}
 }
 
-function AppRoutes() {
+function AppRoutes(props) {
 
 	return <HashRouter>
 		<Routes>
@@ -240,7 +240,7 @@ function AppRoutes() {
 					return <Route 
 						key={screen}
 						path={path} 
-						element={Comp ? <Comp/> : <></>}
+						element={Comp ? <Comp {...props}/> : <></>}
 					/>
 				})
 			}
