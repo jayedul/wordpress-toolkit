@@ -137,10 +137,10 @@ class Dispatcher {
 		// Now verify all the arguments expected data types after casting
 		foreach ( $args as $name => $value ) {
 
-			// The request data value
+			// The request data value type
 			$arg_type = gettype( $value );
 
-			// The accepted type by the method
+			// The acceptable type by the method
 			$param_type = $params[ $name ]['type'];
 
 			// Check if request data type and accepted type matched
@@ -157,6 +157,9 @@ class Dispatcher {
 
 				} elseif ( 'integer' === $param_type && $is_numeric ) {
 					$args[ $name ] = (int) $value;
+
+				} elseif ( 'boolean' === $param_type && $is_numeric ) {
+					$args[ $name ] = (bool) $value;
 
 				} elseif ( 'array' === $param_type && ( $is_null || 'integer' === $arg_type ) ) {
 					// Sometimes 0 can be passed instead of array
