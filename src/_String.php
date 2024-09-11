@@ -165,15 +165,21 @@ class _String {
 	}
 
 	/**
-	 * Helper method to generate placeholders for in query
+	 * Return prepared implode for SQL in array clause
 	 *
-	 * @param int|array $count The amount of placeholders or the data array to get count of.
-	 * @param string    $placeholder The placeholder. Default %d for numeric values as it is mostly used.
+	 * @param array $data
+	 * @param string $data_type
 	 * @return string
 	 */
-	public static function getPlaceHolders( $count, string $placeholder = '%d' ) {
-		$count = is_array( $count ) ? count( $count ) : $count;
-		return implode( ', ', array_fill( 0, $count, $placeholder ) );
+	public static function getSQLImplodesPrepared( array $data, string $data_type = '%d' ) {
+		
+		global $wpdb;
+
+		foreach ( $data as $index => $value ) {
+			$data[ $index ] = $wpdb->prepare( $data_type, $value );
+		}
+		
+		return implode( ', ', array_values( $data ) );
 	}
 
 	/**
