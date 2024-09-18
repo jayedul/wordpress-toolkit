@@ -180,7 +180,7 @@ class Updater {
 					<?php
 						printf(
 							// translators: License error message
-							esc_html__( 'Automatic update has been turned off that might cause %s functional errors %s due to outdated codebase. %sResolve Now%s' ),
+							esc_html__( 'Automatic update has been turned off. Outdated plugin might cause %s functional errors %s. %sResolve Now%s' ),
 							'<span style="color: #dd0000">',
 							'</span>',
 							"<a href='" . esc_url( admin_url( 'admin.php?page=' . $this->page_slug ) ) . "'>",
