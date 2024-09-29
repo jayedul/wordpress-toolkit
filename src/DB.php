@@ -8,7 +8,6 @@
 namespace Solidie_Lib;
 
 use SolidieLib\_Array;
-use SolidieLib\_Number;
 
 /**
  * Databse handler class
@@ -125,18 +124,6 @@ class DB {
 	}
 
 	/**
-	 * Prepare the table name, add prefixes
-	 *
-	 * @param string $name      The table name to get prefixed
-	 * @param array  $arguments Callstatic arguments
-	 * @return string
-	 */
-	public function table( $name ) {
-		global $wpdb;
-		return $wpdb->prefix . $this->configs->db_prefix . $name;
-	}
-
-	/**
 	 * Remove unnecessary things from the SQL
 	 *
 	 * @param string $sql The raw exported SQL file
@@ -161,7 +148,7 @@ class DB {
 
 		return array_map(
 			function ( $query ) use ( $wpdb, $charset_collate ) {
-				
+
 				// Replace table prefix
 				$query = str_replace( 'wp_' . $this->configs->db_prefix, $wpdb->prefix . $this->configs->db_prefix, $query );
 
@@ -264,28 +251,5 @@ class DB {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Get limit for queries
-	 *
-	 * @param int|null $limit The limit to prepare
-	 * @return int
-	 */
-	public function getLimit( $limit = null ) {
-		if ( ! is_numeric( $limit ) ) {
-			$limit = $this->configs->query_limit ?? 20;
-		}
-		return apply_filters( 'solidie_query_result_count', _Number::getInt( $limit, 1 ) );
-	}
-
-	/**
-	 * Get page num to get results for
-	 *
-	 * @param int|null $page The page to prepare
-	 * @return int
-	 */
-	public static function getPage( $page = null ) {
-		return _Number::getInt( $page, 1 );
 	}
 }
