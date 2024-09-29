@@ -5,7 +5,7 @@
  * @package solidie-lib
  */
 
-namespace Solidie_Lib;
+namespace SolidieLib;
 
 use SolidieLib\_Array;
 
@@ -21,7 +21,6 @@ class DB {
 	 * @property string $activation_hook Activation hook name
 	 * @property string $db_deployed_hook Hook name to be called when db is deployed
 	 * @property string $sql_path SQL file path
-	 * @property int $query_limit Default query result limit
 	 */
 	private object $configs;
 
