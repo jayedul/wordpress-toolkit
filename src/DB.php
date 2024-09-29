@@ -67,7 +67,7 @@ class DB {
 	 */
 	private function getDBConfigs( string $key = null ) {
 		$configs = _Array::getArray( get_option( $this->db_configs_key ) );
-		return $key ? $configs[ $key ] : $configs;
+		return $key ? ( $configs[ $key ] ?? null )  : $configs;
 	}
 
 	/**
@@ -80,6 +80,7 @@ class DB {
 		$this->import( file_get_contents( $this->configs->sql_path ) );
 
 		$this->updateDBConfig( 'version', $this->configs->version );
+		$this->updateDBConfig( 'tables', null );
 
 		do_action( $this->configs->db_deployed_hook );
 	}
@@ -106,13 +107,13 @@ class DB {
 
 		global $wpdb;
 
-		$table_names = $this->getDBConfigs( 'tables' );
+		$table_names = _Array::getArray( $this->getDBConfigs( 'tables' ) );
 
 		if ( empty( $table_names ) ) {
 
 			$inspected = $this->getInspected( $this->purgeSQL( file_get_contents( $this->configs->sql_path ) ) );
 			
-			$table_names = array_column( $inspected, 'table' );
+			$table_names = array_column( $inspected, 'table_only' );
 
 			$this->updateDBConfig( 'tables', $table_names );
 		}
@@ -169,7 +170,7 @@ class DB {
 	 *
 	 * @return array
 	 */
-	private static function getInspected( array $queries ) {
+	private function getInspected( array $queries ) {
 		foreach ( $queries as $index => $query ) {
 
 			// Pick table name
@@ -191,9 +192,10 @@ class DB {
 			}
 
 			$queries[ $index ] = array(
-				'query'   => $query,
-				'table'   => $table_name,
-				'columns' => $columns,
+				'query'      => $query,
+				'table'      => $table_name,
+				'table_only' => str_replace( 'wp_' . $this->configs->db_prefix, '', $table_name ),
+				'columns'    => $columns,
 			);
 		}
 
@@ -218,10 +220,10 @@ class DB {
 	 * @param string $sql Raw exported SQL file contents
 	 * @return void
 	 */
-	public static function import( $sql ) {
-		$queries = self::purgeSQL( $sql );
-		$queries = self::applyDynamics( $queries );
-		$queries = self::getInspected( $queries );
+	public function import( $sql ) {
+		$queries = $this->purgeSQL( $sql );
+		$queries = $this->applyDynamics( $queries );
+		$queries = $this->getInspected( $queries );
 
 		// Load helper methods if not loaded already
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
