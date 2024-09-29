@@ -82,7 +82,9 @@ class DB {
 		$this->updateDBConfig( 'version', $this->configs->version );
 		$this->updateDBConfig( 'tables', null );
 
-		do_action( $this->configs->db_deployed_hook );
+		if ( ! empty( $this->configs->db_deployed_hook ) ) {
+			do_action( $this->configs->db_deployed_hook );
+		}
 	}
 
 	/**
