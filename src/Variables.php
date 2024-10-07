@@ -95,11 +95,7 @@ class Variables {
 	 * @return array
 	 */
 	public function getColorPallete() {
-		static $colors = null;
-		if ( $colors === null ) {
-			$colors = Colors::getColors( $this->configs->color_scheme ?? null );
-		}
-		return $colors;
+		return Colors::getColors( $this->configs->color_scheme ?? null );
 	}
 
 	/**
