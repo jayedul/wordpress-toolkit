@@ -25,7 +25,12 @@ class Variables {
 	 * @param object $configs App configs
 	 */
 	public function __construct( $configs ) {
+
 		$this->configs = $configs;
+
+		// Load css colors and style
+		add_action( 'wp_head', array( $this, 'loadStyles' ) );
+		add_action( 'admin_head', array( $this, 'loadStyles' ) );
 	}
 
 	/**
@@ -55,7 +60,7 @@ class Variables {
 			'app_id'       => $this->configs->app_id,
 			'nonce'        => $nonce,
 			'nonce_action' => $nonce_action,
-			'colors'       => Colors::getColors( $this->configs->color_scheme ?? null ),
+			'colors'       => $this->getColorPallete(),
 			'opacities'    => Colors::getOpacities(),
 			'contrast'     => Colors::CONTRAST_FACTOR,
 			'text_domain'  => $this->configs->text_domain,
@@ -82,5 +87,39 @@ class Variables {
 				'logo_url' => wp_get_attachment_image_url( get_theme_mod('custom_logo'), 'full' ),
 			),
 		);
+	}
+
+	/**
+	 * Get color pallete
+	 *
+	 * @return array
+	 */
+	public function getColorPallete() {
+		static $colors = null;
+		if ( $colors === null ) {
+			$colors = Colors::getColors( $this->configs->color_scheme ?? null );
+		}
+		return $colors;
+	}
+
+	/**
+	 * Load styles
+	 *
+	 * @return void
+	 */
+	public function loadStyles() {
+
+		// Load dynamic colors
+		$dynamic_colors = $this->getColorPallete();
+		$solidie_colors = '.' . $this->configs->app_id . '{';
+		foreach ( $dynamic_colors as $name => $code ) {
+			$solidie_colors .= '--solidie-color-' . esc_attr( $name ) . ':' . esc_attr( $code ) . ';';
+		}
+		$solidie_colors .= '}';
+
+		$handler = $this->configs->app_id . '-colors-scheme';	
+
+		wp_enqueue_style( $handler, $this->configs->app_url . 'vendor/solidie/solidie-lib/dist/libraries/colors-loader.css' );
+		wp_add_inline_style( $handler, $solidie_colors );
 	}
 }
