@@ -52,7 +52,7 @@ class Variables {
 			'mountpoints'  => (object) array(),
 			'home_path'    => $home_path,
 			'page_path'    => $page_path,
-			'app_name'     => $this->configs->app_id,
+			'app_id'       => $this->configs->app_id,
 			'nonce'        => $nonce,
 			'nonce_action' => $nonce_action,
 			'colors'       => Colors::getColors( $this->configs->color_scheme ?? null ),

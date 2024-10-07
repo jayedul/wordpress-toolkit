@@ -24,7 +24,7 @@ class Updater {
 	 *
 	 * @var string
 	 */
-	private $app_name;
+	private $app_id;
 
 	/**
 	 * Option key to save license data
@@ -128,12 +128,12 @@ class Updater {
 	public function __construct( $configs ) {
 
 		$this->app_pointer      = $configs['app_pointer'];
-		$this->app_name         = $configs['app_name'];
+		$this->app_id           = $configs['app_id'];
 		$this->app_label        = $configs['app_label'];
 		$this->app_version      = $configs['app_version'];
 		$this->app_url          = $configs['app_url'];
-		$this->option_key       = $this->app_name . '-license-data';
-		$this->page_slug        = $this->app_name . '-license';
+		$this->option_key       = $this->app_id . '-license-data';
+		$this->page_slug        = $this->app_id . '-license';
 		$this->api_endpoint     = $configs['api_endpoint'];
 		$this->root_menu        = $configs['root_menu'];
 		$this->user_role        = $configs['user_role'];
@@ -262,7 +262,7 @@ class Updater {
 		$payload = array(
 			'license_key' => $license_key,
 			'endpoint'    => get_home_url(),
-			'app_name'    => $this->app_name,
+			'app_id'      => $this->app_id,
 			'action'      => $action,
 		);
 
@@ -332,13 +332,13 @@ class Updater {
 	 */
 	public function getPluginInfo( $res, $action, $args ) {
 
-		if ( 'plugin_information' !== $action || ( $this->app_name !== $args->slug ) ) {
+		if ( 'plugin_information' !== $action || ( $this->app_id !== $args->slug ) ) {
 			return false;
 		}
 
 		$remote       = $this->APICall();
 		$res          = new \stdClass();
-		$res->slug    = $this->app_name;
+		$res->slug    = $this->app_id;
 		$res->name    = $this->app_label;
 		$res->version = $this->app_version;
 
@@ -372,7 +372,7 @@ class Updater {
 			$update_info = array(
 				'new_version' => $request_body->data->version,
 				'package'     => $request_body->data->download_url,
-				'slug'        => $this->app_name,
+				'slug'        => $this->app_id,
 				'url'         => $request_body->data->content_permalink,
 			);
 		}
