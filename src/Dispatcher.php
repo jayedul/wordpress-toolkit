@@ -112,7 +112,7 @@ class Dispatcher {
 
 		// Validate access privilege
 		$required_roles = _Array::getArray( ( $prerequisites['role'] ?? array() ), true );
-		$required_roles = apply_filters( 'solidie_controller_roles_' . $this->app_id, $required_roles );
+		$required_roles = apply_filters( 'solidie_controller_roles_' . $this->app_id, $required_roles, $class, $method, $prerequisites );
 		if ( ! User::validateRole( get_current_user_id(), $required_roles ) ) {
 			wp_send_json_error( array( 'message' => 'You are not authorized!' ) );
 		}
