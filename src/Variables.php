@@ -117,9 +117,12 @@ class Variables {
 		}
 		$solidie_colors .= '}';
 
-		$handler = $this->configs->app_id . '-colors-scheme';	
+		$handler = 'solidie-colors-scheme';	
 
-		wp_enqueue_style( $handler, $this->configs->app_url . 'vendor/solidie/solidie-lib/dist/libraries/colors-loader.css' );
+		if ( ! wp_style_is( $handler, 'enqueued' )  ) {
+			wp_enqueue_style( $handler, $this->configs->app_url . 'vendor/solidie/solidie-lib/dist/libraries/colors-loader.css' );
+		}
+
 		wp_add_inline_style( $handler, $solidie_colors );
 	}
 }
