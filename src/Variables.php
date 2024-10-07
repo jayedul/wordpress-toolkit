@@ -116,7 +116,7 @@ class Variables {
 		$handler = 'solidie-colors-scheme';	
 
 		if ( ! wp_style_is( $handler, 'enqueued' )  ) {
-			wp_enqueue_style( $handler, $this->configs->app_url . 'vendor/solidie/solidie-lib/dist/libraries/colors-loader.css' );
+			wp_enqueue_style( $handler, $this->configs->url . 'vendor/solidie/solidie-lib/dist/libraries/colors-loader.css' );
 		}
 
 		wp_add_inline_style( $handler, $solidie_colors );
