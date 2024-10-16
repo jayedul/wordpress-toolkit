@@ -36,7 +36,8 @@ class Readme {
 	public function getLatestChangelog() {
 
 		$changelog = file_get_contents( $this->path );
-		$changelog = trim( end( explode( '== Changelog ==', $changelog ) ) );
+		$changelog = explode( '== Changelog ==', $changelog );
+		$changelog = trim( end( $changelog ) );
 		$changelog = explode( PHP_EOL . PHP_EOL, $changelog )[0];
 		$lines     = array_slice( explode( PHP_EOL, $changelog ), 2 );
 		$lines     = array_map(
