@@ -163,8 +163,10 @@ class _Array {
 				$value[ $index ] = self::sanitizeRecursive( $_value, $_key );
 			}
 		} elseif ( is_string( $value ) ) {
-			// If the prefix is kses_, it means rich text editor content and get it through kses filter. Otherise normal sanitize.
-			$value = strpos( $key, 'kses_' ) === 0 ? _String::applyKses( $value ) : _String::castValue( sanitize_text_field( $value ) );
+			if ( strpos( $key, 'password' ) === false ) {
+				// If the prefix is kses_, it means rich text editor content and get it through kses filter. Otherise normal sanitize.
+				$value = strpos( $key, 'kses_' ) === 0 ? _String::applyKses( $value ) : _String::castValue( sanitize_text_field( $value ) );
+			}
 		}
 
 		return $value;
