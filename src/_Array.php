@@ -301,7 +301,7 @@ class _Array {
 	 *
 	 * @return array
 	 */
-	public static function groupRows( $array, $col_name, $singular_field = null, $is_unique = false, ) {
+	public static function groupRows( $array, $col_name, $singular_field = null, $is_unique = false ) {
 		$grouped_array = array();
 
 		foreach ( $array as $item ) {
