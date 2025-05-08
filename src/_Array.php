@@ -257,7 +257,7 @@ class _Array {
 
 		$result['file']     = $path;
 		$result['dir']      = dirname( $path ) . '/';
-		$result['url']      = plugin_dir_url( $path );
+		$result['url']      = isset( $result['plugin_name'] ) ? plugin_dir_url( $path ) : get_template_directory_uri() . '/';
 		$result['dist_url'] = $result['url'] . 'dist/';
 		$result['dist_url'] = $result['url'] . 'dist/';
 
