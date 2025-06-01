@@ -86,7 +86,7 @@ class Utilities {
 		$pattern = '/\/([^\/]+)\/wp-content\/(plugins|themes)\/([^\/]+)\/.*/';
 		preg_match( $pattern, $url, $matches );
 
-		$parsed_string = strtolower( "CrewMat_{$matches[1]}_{$matches[3]}" );
+		$parsed_string = strtolower( "CrewMat_{$matches[1]}_{$matches[2]}_{$matches[3]}" );
 		$app_id        = preg_replace( '/[^a-zA-Z0-9_]/', '', $parsed_string );
 
 		return $app_id;
