@@ -46,7 +46,7 @@ function ActiveScreen(props) {
 				<strong className={info_class}>{licensee}</strong>
 			</div>
 			<div>
-				<span className={hint_class}>{__('Licensed Type')}</span>
+				<span className={hint_class}>{__('License Type')}</span>
 				<strong className={info_class}>{plan_name}</strong>
 			</div>
 			<div>
