@@ -137,7 +137,7 @@ class _String {
 
 			if ( is_numeric( $value ) ) {
 				// Cast number
-				$value = self::isFloat( $value ) ? (float) $value : (int) $value;
+				$value = self::isFloat( $value ) ? (float) $value : ( strpos( $value, '0' ) !== 0 ? (int) $value : $value );
 
 			} elseif ( 'true' === $value ) {
 				// Cast boolean true
