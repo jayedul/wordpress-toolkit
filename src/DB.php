@@ -65,9 +65,9 @@ class DB {
 	 * @param string $key The key to get
 	 * @return mixed
 	 */
-	private function getDBConfigs( string $key = null ) {
+	private function getDBConfigs( string $key = '' ) {
 		$configs = _Array::getArray( get_option( $this->db_configs_key ) );
-		return $key ? ( $configs[ $key ] ?? null )  : $configs;
+		return ! empty( $key ) ? ( $configs[ $key ] ?? null )  : $configs;
 	}
 
 	/**
