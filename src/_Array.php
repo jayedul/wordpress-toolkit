@@ -158,14 +158,11 @@ class _Array {
 	public static function sanitizeRecursive( $value, $key = null ) {
 		if ( is_array( $value ) ) {
 			foreach ( $value as $_key => $_value ) {
-				// If it is kses, then remove the key prefix from array key as it is not necessary in core applications.
-				$index           = strpos( $_key, 'kses_' ) === 0 ? substr( $_key, 5 ) : $_key;
-				$value[ $index ] = self::sanitizeRecursive( $_value, $_key );
+				$value[ $_key ] = self::sanitizeRecursive( $_value, $_key );
 			}
 		} elseif ( is_string( $value ) ) {
 			if ( strpos( $key, 'password' ) === false ) {
-				// If the prefix is kses_, it means rich text editor content and get it through kses filter. Otherise normal sanitize.
-				$value = strpos( $key, 'kses_' ) === 0 ? _String::applyKses( $value ) : _String::castValue( sanitize_text_field( $value ) );
+				$value = strpos( $key, 'kses_' ) === 0 ? wp_kses_post( $value ) : _String::castValue( sanitize_text_field( $value ) );
 			}
 		}
 
@@ -378,7 +375,7 @@ class _Array {
 	 *
 	 * @return array
 	 */
-	public static function getDescendentCount( array $array, string $count_col, string $add_count_to = null ) {
+	public static function getDescendentCount( array $array, string $count_col, string $add_count_to = '' ) {
 		foreach ( $array as $index => $element ) {
 
 			$count = $element[ $count_col ];
@@ -391,7 +388,7 @@ class _Array {
 
 			}
 
-			if ( ! empty( $count ) && $add_count_to ) {
+			if ( ! empty( $count ) && ! empty( $add_count_to ) ) {
 				$array[ $index ][ $add_count_to ] = $element[ $add_count_to ] . ' (' . $count . ')';
 			}
 		}
